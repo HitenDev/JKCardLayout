@@ -4,11 +4,18 @@ import android.graphics.Canvas
 import androidx.appcompat.app.AppCompatActivity
 
 import android.os.Bundle
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
+
+
+    private var mRemoveDataStack = Stack<String>()
+    private var list = ArrayList<String>()
+    private var cardAdapter : CardAdapter? = null
+
+    private var animatorStackManager: AnimatorStackManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -16,15 +23,17 @@ class MainActivity : AppCompatActivity() {
 
         val config = JKCardLayoutManager.Config(2,24)
 
-        val list = ArrayList<String>()
-
         for (i in 0..40){
             list.add(i.toString())
         }
 
+        animatorStackManager = AnimatorStackManager()
+
         recycler_view.layoutManager = JKCardLayoutManager(config)
 
-        recycler_view.adapter = CardAdapter(list)
+        cardAdapter = CardAdapter(list)
+
+        recycler_view.adapter =cardAdapter
 
         val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.DOWN or ItemTouchHelper.UP or ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
@@ -33,8 +42,20 @@ class MainActivity : AppCompatActivity() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val layoutPosition = viewHolder.layoutPosition
-                list.removeAt(layoutPosition)
+                val removeAt = list.removeAt(layoutPosition)
+                mRemoveDataStack.push(removeAt)
                 recycler_view.adapter?.notifyDataSetChanged()
+                animatorStackManager?.let {
+                    val animatorInfo = AnimatorStackManager.AnimatorInfo()
+                    animatorInfo.startX = 0f
+                    animatorInfo.startY = 0f
+                    animatorInfo.targetX = viewHolder.itemView.translationX/recycler_view.width
+                    animatorInfo.targetY = viewHolder.itemView.translationY/recycler_view.height
+                    animatorInfo.startRotation = 0f
+                    animatorInfo.endRotation = viewHolder.itemView.rotation
+                    animatorInfo.isAdd = false
+                    it.addRemoveToBackStack(animatorInfo)
+                }
             }
 
             override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
@@ -69,11 +90,22 @@ class MainActivity : AppCompatActivity() {
             }
         })
         itemTouchHelper.attachToRecyclerView(recycler_view)
-        val defaultItemAnimator = DefaultItemAnimator()
-        defaultItemAnimator.removeDuration = 100
-        recycler_view.itemAnimator = defaultItemAnimator
+        val cardItemAnimator = CardItemAnimator(animatorStackManager)
+        cardItemAnimator.addDuration = 300
+        cardItemAnimator.removeDuration = 300
+        recycler_view.itemAnimator = cardItemAnimator
     }
 
-
+    override fun onBackPressed() {
+        val pop = mRemoveDataStack.pop()
+        if (pop !=null){
+            list.add(0,pop)
+            animatorStackManager?.pendingOpt = AnimatorStackManager.Opt.ADD
+            cardAdapter?.notifyItemInserted(0)
+//            cardAdapter?.notifyDataSetChanged()
+            return
+        }
+        super.onBackPressed()
+    }
 
 }
