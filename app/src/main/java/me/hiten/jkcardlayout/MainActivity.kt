@@ -11,11 +11,13 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
 
 
-    private var mRemoveDataStack = Stack<String>()
+    private var mRemoveDataStack = LinkedList<String>()
     private var list = ArrayList<String>()
     private var cardAdapter : CardAdapter? = null
 
     private var animatorStackManager: AnimatorStackManager? = null
+
+    private var jKCardLayoutManager: JKCardLayoutManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +31,9 @@ class MainActivity : AppCompatActivity() {
 
         animatorStackManager = AnimatorStackManager()
 
-        recycler_view.layoutManager = JKCardLayoutManager(config)
+        jKCardLayoutManager = JKCardLayoutManager(config,recycler_view,animatorStackManager!!)
+
+        recycler_view.layoutManager = jKCardLayoutManager
 
         cardAdapter = CardAdapter(list)
 
@@ -90,20 +94,19 @@ class MainActivity : AppCompatActivity() {
             }
         })
         itemTouchHelper.attachToRecyclerView(recycler_view)
-        val cardItemAnimator = CardItemAnimator(animatorStackManager)
-        cardItemAnimator.addDuration = 300
-        cardItemAnimator.removeDuration = 300
-        recycler_view.itemAnimator = cardItemAnimator
     }
 
     override fun onBackPressed() {
-        val pop = mRemoveDataStack.pop()
-        if (pop !=null){
-            list.add(0,pop)
-            animatorStackManager?.pendingOpt = AnimatorStackManager.Opt.ADD
-            cardAdapter?.notifyItemInserted(0)
-//            cardAdapter?.notifyDataSetChanged()
-            return
+        if (mRemoveDataStack.size>0) {
+            val pop = mRemoveDataStack.pop()
+            if (pop != null) {
+                list.add(0, pop)
+                jKCardLayoutManager?.pendingOptPrev()
+                cardAdapter?.notifyDataSetChanged()
+                return
+            }else{
+                super.onBackPressed()
+            }
         }
         super.onBackPressed()
     }

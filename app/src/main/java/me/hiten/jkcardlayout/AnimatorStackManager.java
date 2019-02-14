@@ -1,31 +1,19 @@
 package me.hiten.jkcardlayout;
 
 
+import java.util.LinkedList;
 import java.util.Random;
-import java.util.Stack;
 
 public class AnimatorStackManager {
 
 
-    private Stack<AnimatorInfo> mStack = new Stack<>();
-
-
-    Opt mPendingOpt = Opt.NONE;
-
-    enum  Opt{
-        NONE,REMOVE,ADD;
-    }
-
-    public void setPendingOpt(Opt pendingOpt) {
-        this.mPendingOpt = pendingOpt;
-    }
-
-    public Opt getPendingOpt() {
-        return mPendingOpt;
-    }
+    private LinkedList<AnimatorInfo> mStack = new LinkedList<>();
 
     public AnimatorInfo takeAdd() {
-        AnimatorInfo pop = mStack.pop();
+        AnimatorInfo pop = null;
+        if (mStack.size() > 0) {
+            pop = mStack.pop();
+        }
         if (pop == null) {
             pop = new AnimatorInfo();
         }
@@ -46,11 +34,11 @@ public class AnimatorStackManager {
     public AnimatorInfo createRemove() {
         AnimatorInfo animatorInfo = new AnimatorInfo();
         animatorInfo.isAdd = false;
-        animatorInfo.targetX=0;
+        animatorInfo.targetX = 0;
         animatorInfo.targetY = 0;
         animatorInfo.endRotation = 0;
         boolean b = new Random().nextBoolean();
-        animatorInfo.startX = b?-1.0f:1.0f;
+        animatorInfo.startX = b ? -1.0f : 1.0f;
         animatorInfo.startY = 1f;
         animatorInfo.startRotation = 10;
         return animatorInfo;
