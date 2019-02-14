@@ -34,13 +34,13 @@ public class AnimatorStackManager {
     public AnimatorInfo createRemove() {
         AnimatorInfo animatorInfo = new AnimatorInfo();
         animatorInfo.isAdd = false;
-        animatorInfo.targetX = 0;
-        animatorInfo.targetY = 0;
-        animatorInfo.endRotation = 0;
+        animatorInfo.startX = 0;
+        animatorInfo.startY = 0;
+        animatorInfo.startRotation = 0;
         boolean b = new Random().nextBoolean();
-        animatorInfo.startX = b ? -1.0f : 1.0f;
-        animatorInfo.startY = 1f;
-        animatorInfo.startRotation = 10;
+        animatorInfo.targetX = b ? -1.0f : 1.0f;
+        animatorInfo.targetY = 1f;
+        animatorInfo.endRotation = 10;
         return animatorInfo;
     }
 

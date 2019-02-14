@@ -116,12 +116,53 @@ class JKCardLayoutManager(config: Config, recyclerView: RecyclerView, animatorSt
         }
 
         if (mRunNextAnimation) {
-            mRunNextAnimation = false
-            requestLayout()
+            if (mRecyclerView.childCount < 0) {
+                mRunNextAnimation = false
+                onLayoutChildren(recycler, state)
+            } else {
+                mAnimationRunning = true
+                val view = mRecyclerView.getChildAt(mRecyclerView.childCount - 1)
+                val createRemove = mAnimatorStackManager.createRemove()
+                view.animate().setDuration(300).translationX(createRemove.targetX*mRecyclerView.width).translationY(createRemove.targetY*mRecyclerView.height).rotation(createRemove.endRotation)
+                        .setListener(object :AnimatorListenerAdapter(){
+
+                            override fun onAnimationEnd(animation: Animator?) {
+                                super.onAnimationEnd(animation)
+                                mRunNextAnimation = false
+                                mAnimationRunning = false
+                                mAnimatorStackManager.addRemoveToBackStack(createRemove)
+                                requestLayout()
+                            }
+                        })
+                        .setUpdateListener(object : ValueAnimator.AnimatorUpdateListener {
+                            val childCount = mRecyclerView.childCount
+                            val translationXs: Array<Float?> = arrayOfNulls(childCount)
+                            val translationYs: Array<Float?> = arrayOfNulls(childCount)
+                            override fun onAnimationUpdate(animation: ValueAnimator?) {
+                                val value = animation!!.animatedValue as Float
+                                val fl = value * mConfig.offset
+                                for (i in 0 until childCount) {
+                                    val childAt = mRecyclerView.getChildAt(i)
+                                    if (childAt == view) {
+                                        continue
+                                    }
+                                    if (translationXs[i] == null) {
+                                        translationXs[i] = childAt.translationX
+                                    }
+                                    if (translationYs[i] == null) {
+                                        translationYs[i] = childAt.translationY
+                                    }
+                                    childAt.translationX = translationXs[i]!!.toFloat() - fl
+                                    childAt.translationY = translationYs[i]!!.toFloat() + fl
+                                }
+                            }
+
+                        })
+                        .start()
+
+            }
             return
         }
-
-
         detachAndScrapAttachedViews(recycler)
 
         if (itemCount < 1) {
@@ -163,7 +204,7 @@ class JKCardLayoutManager(config: Config, recyclerView: RecyclerView, animatorSt
         mRunPrevAnimation = true
     }
 
-    fun next() {
+    fun pendingOptNext() {
         mRunNextAnimation = true
     }
 }

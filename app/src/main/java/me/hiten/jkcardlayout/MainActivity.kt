@@ -94,6 +94,21 @@ class MainActivity : AppCompatActivity() {
             }
         })
         itemTouchHelper.attachToRecyclerView(recycler_view)
+
+        btn_prev.setOnClickListener {
+            onBackPressed()
+        }
+
+        btn_next.setOnClickListener {
+            onNextPressed()
+        }
+    }
+
+    private fun onNextPressed(){
+        val removeAt = list.removeAt(0)
+        mRemoveDataStack.push(removeAt)
+        jKCardLayoutManager?.pendingOptNext()
+        cardAdapter?.notifyDataSetChanged()
     }
 
     override fun onBackPressed() {
