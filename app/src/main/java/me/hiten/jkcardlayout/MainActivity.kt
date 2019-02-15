@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val config = JKCardLayoutManager.Config(2,24)
+        val config = JKCardLayoutManager.Config(2,8.dp)
 
         animatorStackManager = AnimatorStackManager()
 
@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity() {
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
                 val dXY = Math.sqrt((dX * dX + dY * dY).toDouble()).toFloat()
                 val wh = Math.sqrt((recyclerView.width*recyclerView.width+recyclerView.height*recyclerView.height).toDouble()).toFloat()
-                var ratio = 1-Math.min(Math.abs(dXY)/(wh*0.5f),1f)
+                var ratio = Math.min(Math.abs(dXY)/(wh*0.5f),1f)
 
                 val childCount = recyclerView.childCount
                 if (childCount<=1){
@@ -88,8 +88,8 @@ class MainActivity : AppCompatActivity() {
                 }
                 for (i in 0 until childCount-1){
                     val childAt = recyclerView.getChildAt(i)
-                    childAt.translationX = config.offset * (i+ratio)
-                    childAt.translationY = -config.offset * (i+ratio)
+                    childAt.translationX = config.offset * (childCount-1-i-ratio)
+                    childAt.translationY = -config.offset * (childCount-1-i-ratio)
                 }
 
                 viewHolder.itemView.rotation = Math.signum(-dX)*Math.min(1f,Math.abs(dX)/recyclerView.width)*10f

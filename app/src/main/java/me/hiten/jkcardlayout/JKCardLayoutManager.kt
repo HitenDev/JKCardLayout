@@ -44,7 +44,7 @@ class JKCardLayoutManager(config: Config, recyclerView: RecyclerView, animatorSt
                 onLayoutChildren(recycler, state)
             } else {
                 mAnimationRunning = true
-                if (mRecyclerView.childCount > 1) {
+                if (mRecyclerView.childCount > mConfig.maxCount-1) {
                     detachAndScrapViewAt(0, recycler)
                 }
                 val view = recycler.getViewForPosition(0)
