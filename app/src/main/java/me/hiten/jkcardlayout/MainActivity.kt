@@ -11,8 +11,8 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
 
 
-    private var mRemoveDataStack = LinkedList<String>()
-    private var list = ArrayList<String>()
+    private var mRemoveDataStack = LinkedList<CardEntity>()
+    private var list = ArrayList<CardEntity>()
     private var cardAdapter : CardAdapter? = null
 
     private var animatorStackManager: AnimatorStackManager? = null
@@ -25,10 +25,6 @@ class MainActivity : AppCompatActivity() {
 
         val config = JKCardLayoutManager.Config(2,24)
 
-        for (i in 0..40){
-            list.add(i.toString())
-        }
-
         animatorStackManager = AnimatorStackManager()
 
         jKCardLayoutManager = JKCardLayoutManager(config,recycler_view,animatorStackManager!!)
@@ -38,6 +34,13 @@ class MainActivity : AppCompatActivity() {
         cardAdapter = CardAdapter(list)
 
         recycler_view.adapter =cardAdapter
+
+
+        MockData.getCards(this) {
+            list.clear()
+            list.addAll(it)
+            cardAdapter?.notifyDataSetChanged()
+        }
 
         val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.DOWN or ItemTouchHelper.UP or ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {

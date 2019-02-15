@@ -3,13 +3,16 @@ package me.hiten.jkcardlayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 
-class CardAdapter(data: List<String>) : RecyclerView.Adapter<CardAdapter.VH>() {
+class CardAdapter(data: List<CardEntity>) : RecyclerView.Adapter<CardAdapter.VH>() {
 
 
-    private var mList : List<String> = data
+    private var mList : List<CardEntity> = data
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
@@ -21,12 +24,16 @@ class CardAdapter(data: List<String>) : RecyclerView.Adapter<CardAdapter.VH>() {
     }
 
     override fun onBindViewHolder(holder: VH, position: Int) {
-        holder.textView.text = mList[position]
+        val exploreEntity = mList[position]
+        holder.textView.text = exploreEntity.text
+        val noAnimation = RequestOptions.noAnimation()
+        Glide.with(holder.itemView.context).load(exploreEntity.picUrl).apply(noAnimation).into(holder.bgIv)
     }
 
     class VH(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         val textView:TextView = itemView.findViewById(R.id.tv_text)
+        val bgIv:ImageView = itemView.findViewById(R.id.iv_background)
 
     }
 
