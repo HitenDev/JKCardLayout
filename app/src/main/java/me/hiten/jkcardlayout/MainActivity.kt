@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         if (mCardLayoutHelper.canBack()){
             mCardLayoutHelper.doBack()
-        }else{
+        }else if (mCardLayoutHelper.noBack()){
             super.onBackPressed()
         }
     }

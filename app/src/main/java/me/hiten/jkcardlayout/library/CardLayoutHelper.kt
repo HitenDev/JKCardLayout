@@ -187,6 +187,10 @@ class CardLayoutHelper {
         return mRemovedDataStack.isNotEmpty() && mState == State.IDLE && mJKCardLayoutManager.canBack()
     }
 
+    fun noBack(): Boolean {
+        return mRemovedDataStack.isNullOrEmpty()
+    }
+
     fun doNext() {
         val data = getDataList() as? MutableList<Any> ?: return
 
