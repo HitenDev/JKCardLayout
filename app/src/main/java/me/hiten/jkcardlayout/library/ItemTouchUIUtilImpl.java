@@ -1,4 +1,4 @@
-package me.hiten.jkcardlayout;
+package me.hiten.jkcardlayout.library;
 
 import android.graphics.Canvas;
 import android.os.Build;
@@ -7,8 +7,9 @@ import android.view.View;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.ItemTouchUIUtil;
 import androidx.recyclerview.widget.RecyclerView;
+import me.hiten.jkcardlayout.R;
 
-public class ItemTouchUIUtilImpl implements ItemTouchUIUtil {
+class ItemTouchUIUtilImpl implements ItemTouchUIUtil {
     static final ItemTouchUIUtil INSTANCE =  new ItemTouchUIUtilImpl();
 
     @Override

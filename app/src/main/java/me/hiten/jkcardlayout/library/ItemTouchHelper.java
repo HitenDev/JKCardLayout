@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.hiten.jkcardlayout;
+package me.hiten.jkcardlayout.library;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
@@ -69,7 +69,7 @@ import java.util.List;
  * <p/>
  * Most of the time you only need to override <code>onChildDraw</code>.
  */
-public class ItemTouchHelper extends RecyclerView.ItemDecoration
+class ItemTouchHelper extends RecyclerView.ItemDecoration
         implements RecyclerView.OnChildAttachStateChangeListener {
 
     /**
@@ -2214,7 +2214,7 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration
      * });
      * </pre>
      */
-    public abstract static class SimpleCallback extends Callback {
+    abstract static class SimpleCallback extends Callback {
 
         private int mDefaultSwipeDirs;
 

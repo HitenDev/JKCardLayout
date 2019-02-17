@@ -1,4 +1,4 @@
-package me.hiten.jkcardlayout
+package me.hiten.jkcardlayout.library
 
 import android.content.res.Resources
 
