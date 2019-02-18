@@ -106,7 +106,9 @@ class MainActivity : AppCompatActivity() {
 
 
         btn_prev.setOnClickListener {
-            onBackPressed()
+            if (mCardLayoutHelper.canBack()){
+                mCardLayoutHelper.doBack()
+            }
         }
 
         btn_next.setOnClickListener {
@@ -128,7 +130,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun getStatusBarHeight(context: Context): Int {
+    private fun getStatusBarHeight(context: Context): Int {
         var statusBarHeight = 0
         val resourceId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
         if (resourceId > 0) {
