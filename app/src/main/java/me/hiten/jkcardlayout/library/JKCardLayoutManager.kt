@@ -51,12 +51,7 @@ class JKCardLayoutManager(config: CardLayoutHelper.Config, recyclerView: Recycle
                 }
                 val view = recycler.getViewForPosition(0)
                 addView(view)
-                measureChildWithMargins(view, 0, 0)
-                val widthSpace = width - getDecoratedMeasuredWidth(view)
-                val heightSpace = height - getDecoratedMeasuredHeight(view)
-                layoutDecoratedWithMargins(view, widthSpace / 2, heightSpace / 2,
-                        widthSpace / 2 + getDecoratedMeasuredWidth(view),
-                        heightSpace / 2 + getDecoratedMeasuredHeight(view))
+                measureLayoutItemView(view)
                 view.alpha = 0f
                 doBackAnimator(view)
             }
@@ -86,14 +81,7 @@ class JKCardLayoutManager(config: CardLayoutHelper.Config, recyclerView: Recycle
         for (position in maxCount - 1 downTo 0) {
             val view = recycler.getViewForPosition(position)
             addView(view)
-            measureChildWithMargins(view, 0, 0)
-
-            val widthSpace = width - getDecoratedMeasuredWidth(view)
-            val heightSpace = height - getDecoratedMeasuredHeight(view)
-            layoutDecoratedWithMargins(view, widthSpace / 2, heightSpace / 2,
-                    widthSpace / 2 + getDecoratedMeasuredWidth(view),
-                    heightSpace / 2 + getDecoratedMeasuredHeight(view))
-
+            measureLayoutItemView(view)
             view.rotation = 0f
             if (position > 0) {
                 view.translationX = mConfig.offset * position.toFloat()
@@ -105,6 +93,16 @@ class JKCardLayoutManager(config: CardLayoutHelper.Config, recyclerView: Recycle
 
         }
 
+    }
+
+    private fun measureLayoutItemView(view: View){
+        measureChildWithMargins(view, 0, 0)
+
+        val widthSpace = width - getDecoratedMeasuredWidth(view)
+        val lp = view.layoutParams as RecyclerView.LayoutParams
+        layoutDecoratedWithMargins(view, widthSpace / 2, 0,
+                widthSpace / 2 + getDecoratedMeasuredWidth(view),
+                lp.topMargin + getDecoratedMeasuredHeight(view))
     }
 
 

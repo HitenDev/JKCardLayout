@@ -8,7 +8,7 @@ import org.json.JSONObject
 object MockData {
 
 
-    fun getCards(context: Context, callBack: (List<CardEntity>) -> Unit) {
+    fun getCards(context: Context, callBack: (Map<String,Any>) -> Unit) {
 
         Thread(Runnable {
             val arrayList = ArrayList<CardEntity>()
@@ -29,8 +29,25 @@ object MockData {
                     }
                 }
             }
+
+            val toolbarList = ArrayList<ToolBarEntity>()
+            val toolbars = jsonObject.optJSONObject("data")?.optJSONArray("toolbarItems")
+            toolbars?.let {
+                for (index in 0 until it.length()) {
+                    val toolbar = it.optJSONObject(index)
+                    val url = toolbar?.optString("url")
+                    val picUrl = toolbar?.optString("picUrl")
+                    val title = toolbar?.optString("title")
+                    if (title != null && picUrl != null) {
+                        toolbarList.add(ToolBarEntity(picUrl,title,url))
+                    }
+                }
+            }
             Handler(Looper.getMainLooper()).post {
-                callBack(arrayList)
+                val map = HashMap<String,Any>()
+                map["cards"] = arrayList
+                map["toolbarItems"] = toolbarList
+                callBack(map)
             }
         }).start()
     }
