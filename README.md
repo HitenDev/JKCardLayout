@@ -26,17 +26,17 @@
 ### 绑定RecyclerView
 
 ```Kotlin
-mCardLayoutHelper = CardLayoutHelper()
+mCardLayoutHelper = CardLayoutHelper<T>()
 mCardLayoutHelper.attachToRecyclerView(recycler_view)
 ```
 ### 绑定数据源List
 
 ```Kotlin
-mCardLayoutHelper.bindDataSource(object : CardLayoutHelper.BindDataSource{
-    override fun bind(): List<Any> {
-        return list
-    }
-})
+mCardLayoutHelper.bindDataSource(object : CardLayoutHelper.BindDataSource<T> {
+     override fun bind(): List<T> {
+         return list
+     }
+ })
 ```
 绑定数据源采用回调接口形式，需要返回绑定的RecyclerView对应Adapter下的数据源List
 
@@ -44,13 +44,14 @@ mCardLayoutHelper.bindDataSource(object : CardLayoutHelper.BindDataSource{
 ### 卡片参数配置
 
 ```Kotlin
- mCardLayoutHelper.setConfig(CardLayoutHelper.Config(maxCount = 2,offset = 12.dp,duration = 300,swipeThreshold = 0.4f))
+ mCardLayoutHelper.setConfig(CardLayoutHelper.Config().setCardCount(2).setMaxRotation(20f))
 ```
 CardLayoutHelper.Config接受参数配置，主要参数含义:
-- maxCount    //卡片布局最多包含卡片个数，默认是2个
+- cardCount    //卡片布局最多包含卡片个数，默认是2个
 - offset    //卡片之间的偏移量，单位是像素
 - duration    //卡片动画执行时间
 - swipeThreshold    //拖拽卡片触发移除的阈值
+- maxRotation    //拖拽过程中最大旋转角度(角度制)
 
 ### 操作Back和Next
 
