@@ -1,12 +1,16 @@
 # JKCardLayout
 本Demo使用RecyclerView和自定义LayoutManager等，高仿即刻App探索页，支持卡片拖拽，卡片回退栈管理，下拉展示菜单等功能；欢迎大家点赞或者吐槽。
 
-代码大部分使用Kotlin语言编写，假装娴熟，如有使用不当还请各路大神指点，虚心求教。
+代码大部分使用Kotlin语言编写，假装娴熟，如有使用不当还请各路大神指点。
 
+# 下载Demo
+![](https://www.pgyer.com/app/qrcode/HjLN)
+
+下载地址：https://www.pgyer.com/HjLN
 
 # 图片展示
 
-youtube：https://youtu.be/F9QJEQJnHmo
+**视频演示**：https://youtu.be/F9QJEQJnHmo
 
 ![](https://upload-images.jianshu.io/upload_images/869487-de188885d2757ce3.gif?imageMogr2/auto-orient/strip)
 ![](https://upload-images.jianshu.io/upload_images/869487-6e5093c7c0955bcc.gif?imageMogr2/auto-orient/strip)
@@ -83,8 +87,8 @@ mCardLayoutHelper.setOnCardLayoutListener(object :OnCardLayoutListener{
 -  onStateChanged(state: CardLayoutHelper.State)//卡片状态监听，State详解
 -  State.IDLE //默认状态，无拖拽和动画执行
 -  State.SWIPE　//手指拖动状态
--  State.BACK_ANIM //动画执行Back状态，包含两种情况(松手回到默认位置或者栈执Back)
--  State.LEAVE_ANIM　//动画执行LEAVE状态，包括两种情况(松手移除卡片或者执行Next)
+-  State.BACK_ANIM //Back动画执行中，包含两种情况(释放手势卡片缓慢回到默认位置过程、调用back方法执行动画)
+-  State.LEAVE_ANIM　//LEAVE动画执行中，包括两种情况(释放手势卡片缓慢移除布局过程、调用next方法执行动画)
 
 ## 对下拉展示和Touch事件感兴趣的同学，直接看这个类：[PullDownLayout](https://github.com/HitenDev/JKCardLayout/blob/master/app/src/main/java/me/hiten/jkcardlayout/PullDownLayout.kt)
 
