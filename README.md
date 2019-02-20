@@ -109,7 +109,7 @@ pull_down_layout.setDragRatio(0.6f)
 //设置视觉差系数
 pull_down_layout.setParallaxRatio(1.1f)
 //设置动画时长
-pull_down_layout.setDragRatio(200f)
+pull_down_layout.setDuration(200)
 ```
 
 注意[PullDownLayout](https://github.com/HitenDev/JKCardLayout/blob/master/sample/src/main/java/me/hiten/jkcardlayout/sample/PullDownLayout.kt)类不在library中，如果需要使用的话，建议您clone一份代码改巴改巴

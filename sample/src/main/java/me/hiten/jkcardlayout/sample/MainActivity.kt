@@ -91,7 +91,7 @@ class MainActivity : AppCompatActivity() {
         //设置视觉差系数
         pull_down_layout.setParallaxRatio(1.1f)
         //设置动画时长
-        pull_down_layout.setDragRatio(200f)
+        pull_down_layout.setDuration(200)
     }
 
     @Suppress("UNCHECKED_CAST")
