@@ -184,7 +184,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateConfigShow(){
-        val text = "卡片数:${mConfig.cardCount} | 偏移像素:${mConfig.offset} | 最大旋转角度:${mConfig.maxRotation} | 拖拽触发阈值${mConfig.swipeThreshold} | 下拉菜单阻尼:${pull_down_layout.getDragRatio()} | 下拉视觉差比例${pull_down_layout.getParallaxRatio()}"
+        val text = "卡片数:${mConfig.cardCount} | 偏移像素:${mConfig.offset} | 最大旋转角度:${mConfig.maxRotation} | 拖拽触发阈值:${mConfig.swipeThreshold} | 下拉菜单阻尼:${pull_down_layout.getDragRatio()} | 下拉视觉差比例:${pull_down_layout.getParallaxRatio()}"
         val list = text.split("|")
         val spannableString = SpannableString(text)
         var start = 0
@@ -193,7 +193,31 @@ class MainActivity : AppCompatActivity() {
             val end = start + item.length
             spannableString.setSpan(object :ClickableSpan(){
                 override fun onClick(widget: View) {
-                    showDialog(item)
+                    when(index){
+                        0->{
+                            showDialog(index,item,1,mConfig.cardCount,3,1)
+                        }
+                        1->{
+                            showDialog(index,item,0,mConfig.offset,20.dp,1)
+                        }
+                        2->{
+                            val divisor = 2
+                            showDialog(index,item,0,mConfig.maxRotation.toInt()*divisor,120,divisor)
+                        }
+                        3->{
+                            val divisor = 10
+                            showDialog(index,item,1, (mConfig.swipeThreshold*divisor).toInt(),8,divisor)
+                        }
+                        4->{
+                            val divisor = 10
+                            showDialog(index,item,2, (pull_down_layout.getDragRatio()*divisor).toInt(),12,divisor)
+                        }
+                        5->{
+                            val divisor = 10
+                            showDialog(index,item,8,(pull_down_layout.getParallaxRatio()*divisor).toInt(),15,divisor)
+                        }
+
+                    }
                 }
             },start,end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
             start+=item.length + 1
@@ -202,9 +226,40 @@ class MainActivity : AppCompatActivity() {
         tv_show_config.movementMethod = LinkMovementMethod.getInstance()
     }
 
-    private fun showDialog(title:String){
-        val settingDialogFragment = SettingDialogFragment.newInstance(title)
+    private fun showDialog(index:Int,title: String,start:Int,cur:Int,end:Int,divisor:Int){
+        val settingDialogFragment = SettingDialogFragment.newInstance(title,start,cur,end,divisor)
         settingDialogFragment.show(supportFragmentManager,"dialog_setting")
+        settingDialogFragment.setCallback {
+            when(index){
+                0->{
+                    mConfig.cardCount = it.toInt()
+                    recycler_view.adapter?.notifyDataSetChanged()
+                }
+                1->{
+                    mConfig.offset = it.toInt()
+                    recycler_view.adapter?.notifyDataSetChanged()
+                }
+                2->{
+                    mConfig.maxRotation = it.toFloat()
+                    recycler_view.adapter?.notifyDataSetChanged()
+                }
+                3->{
+                    mConfig.swipeThreshold = it.toFloat()
+                    recycler_view.adapter?.notifyDataSetChanged()
+                }
+                4->{
+                    pull_down_layout.setDragRatio(it.toFloat())
+                }
+                5->{
+                    pull_down_layout.setParallaxRatio(it.toFloat())
+                }
+
+                else -> {
+
+                }
+            }
+            updateConfigShow()
+        }
     }
 
 }

@@ -17,6 +17,8 @@
 
     <android.support.v7.widget.AppCompatSeekBar
         android:id="@+id/seek_bar"
+        android:max="10"
+        android:progress="1"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         />
