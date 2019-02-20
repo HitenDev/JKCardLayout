@@ -1,5 +1,5 @@
 # JKCardLayout
-本Demo使用RecyclerView和自定义LayoutManager等，高仿即刻App探索页，支持卡片拖拽，卡片回退栈管理，下拉展示菜单等功能；欢迎大家点赞或者吐槽。
+本项目使用RecyclerView和自定义LayoutManager等方法实现即刻App探索页交互，支持卡片拖拽，卡片回退栈管理，下拉展示菜单等功能；欢迎大家点赞或者吐槽。
 
 代码大部分使用Kotlin语言编写，假装娴熟，如有使用不当还请各路大神指点。
 
@@ -44,7 +44,14 @@ mCardLayoutHelper.bindDataSource(object : CardLayoutHelper.BindDataSource<T> {
 ### 卡片参数配置
 
 ```Kotlin
- mCardLayoutHelper.setConfig(CardLayoutHelper.Config().setCardCount(2).setMaxRotation(20f))
+val config = CardLayoutHelper.Config()
+        .setCardCount(2)
+        .setMaxRotation(20f)
+        .setOffset(8.dp)
+        .setSwipeThreshold(0.2f)
+        .setDuration(200)
+
+mCardLayoutHelper.setConfig(config)
 ```
 CardLayoutHelper.Config接受参数配置，主要参数含义:
 - cardCount    //卡片布局最多包含卡片个数，默认是2个
@@ -53,7 +60,7 @@ CardLayoutHelper.Config接受参数配置，主要参数含义:
 - swipeThreshold    //拖拽卡片触发移除的阈值
 - maxRotation    //拖拽过程中最大旋转角度(角度制)
 
-### 操作Back和Next
+### 行为操作(Back和Next)
 
 ```Kotlin
 //check and doNext
@@ -71,6 +78,7 @@ if (mCardLayoutHelper.noBack()){
 }
 
 ```
+结合即刻案例，提供了Back和Next两种操作，使用前建议调用canXXX()进行判断
 
 ### 回调监听
 
@@ -91,7 +99,21 @@ mCardLayoutHelper.setOnCardLayoutListener(object :OnCardLayoutListener{
 -  State.BACK_ANIM //Back动画执行中，包含两种情况(释放手势卡片缓慢回到默认位置过程、调用back方法执行动画)
 -  State.LEAVE_ANIM　//LEAVE动画执行中，包括两种情况(释放手势卡片缓慢移除布局过程、调用next方法执行动画)
 
-## 对下拉展示和Touch事件感兴趣的同学，直接看这个类：[PullDownLayout](https://github.com/HitenDev/JKCardLayout/blob/master/app/src/main/java/me/hiten/jkcardlayout/PullDownLayout.kt)
+## 仿即刻下拉手势布局：[PullDownLayout](https://github.com/HitenDev/JKCardLayout/blob/master/sample/src/main/java/me/hiten/jkcardlayout/sample/PullDownLayout.kt)
+
+### 基本功能设置
+
+```Kotlin
+//设置阻尼
+pull_down_layout.setDragRatio(0.6f)
+//设置视觉差系数
+pull_down_layout.setParallaxRatio(1.1f)
+//设置动画时长
+pull_down_layout.setDragRatio(200f)
+```
+
+注意[PullDownLayout](https://github.com/HitenDev/JKCardLayout/blob/master/sample/src/main/java/me/hiten/jkcardlayout/sample/PullDownLayout.kt)类不在library中，如果需要使用的话，建议您clone一份代码改巴改巴
+
 
 
 # 声明

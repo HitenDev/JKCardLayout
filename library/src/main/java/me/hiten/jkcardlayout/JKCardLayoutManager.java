@@ -8,7 +8,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-
+/**
+ * 自定义LayoutManager，主要管理RecyclerView子View的布局以及Next,Back的动画以及复用
+ */
 public class JKCardLayoutManager extends RecyclerView.LayoutManager {
 
     private RecyclerView mRecyclerView;
@@ -36,22 +38,47 @@ public class JKCardLayoutManager extends RecyclerView.LayoutManager {
     }
 
 
+    /**
+     * 控制是否执行Back,主要是用给onLayoutChildren做逻辑判断
+     */
     private boolean mPendingOptBack;
+
+    /**
+     * 控制是否执行Next,主要是用给onLayoutChildren做逻辑判断
+     */
     private boolean mPendingOptNext;
+
+    /**
+     * 动画是否正在执行
+     */
     private boolean mAnimatorRunning;
 
+    /**
+     * 是否能够执行Back
+     * @return true or false
+     */
     boolean canBack(){
         return !mPendingOptBack&&!mAnimatorRunning;
     }
 
+    /**
+     * 是否能够执行Next
+     * @return true or false
+     */
     boolean canNext(){
         return !mPendingOptNext&&!mAnimatorRunning;
     }
 
+    /**
+     * 即将进行Back操作，下一步会影响onLayoutChildren的行为
+     */
     void pendingOptBack() {
         mPendingOptBack = true;
     }
 
+    /**
+     * 即将进行Next操作，下一步会影响onLayoutChildren的行为
+     */
     void pendingOptNext() {
         mPendingOptNext = true;
     }
@@ -66,6 +93,7 @@ public class JKCardLayoutManager extends RecyclerView.LayoutManager {
             return;
         }
         int childCount = mRecyclerView.getChildCount();
+        //Back操作在onLayoutChildren中的本质是移除最底下的View，添加到最顶层，做动画操作假装从屏幕外进来，掩人耳目
         if (mPendingOptBack) {
             if (childCount < 0) {
                 mPendingOptBack = false;
@@ -73,18 +101,21 @@ public class JKCardLayoutManager extends RecyclerView.LayoutManager {
                 onLayoutChildren(recycler, state);
             } else {
                 mAnimatorRunning = true;
+                //尝试先回收最底下的View
                 if (childCount > mConfig.cardCount - 1) {
                     detachAndScrapViewAt(0, recycler);
                 }
+                //复用上面回收的View
                 View view = recycler.getViewForPosition(0);
+                //透明度设置成0，要的就是添加的那瞬间不可见
+                view.setAlpha(0f);
                 addView(view);
                 measureLayoutItemView(view);
-                view.setAlpha(0f);
                 doBackAnimator(view);
             }
             return;
         }
-
+        //Next操作在onLayoutChildren中的本质是暂时不执行View的移除，等动画完成之后，执行requestLayout刷新整个布局
         if (mPendingOptNext) {
             if (childCount < 0) {
                 mPendingOptNext = false;
@@ -98,16 +129,21 @@ public class JKCardLayoutManager extends RecyclerView.LayoutManager {
             return;
         }
 
+        //逻辑能走到这里说明没有动画的执行，就是对卡片进行布局
+
+        //移除掉所有的View
         detachAndScrapAttachedViews(recycler);
 
+        //这个ItemCount对应Adapter返回的count，不是RecyclerView孩子数
         int itemCount = getItemCount();
         if (itemCount < 1) {
             return;
         }
-
+        //计算最大卡片个数
         int maxCount = Math.min(mConfig.cardCount, itemCount);
-
+        //要倒序遍历,因为先执行addView的View会在下面
         for (int position=maxCount - 1;position>=0;position--) {
+            //position是制从大到小遍历，越大的越排在下面，执行的偏移也就越大
             View view = recycler.getViewForPosition(position);
             addView(view);
             measureLayoutItemView(view);
@@ -119,10 +155,13 @@ public class JKCardLayoutManager extends RecyclerView.LayoutManager {
                 view.setTranslationX(0f);
                 view.setTranslationY(0f);
             }
-
         }
     }
 
+    /**
+     * 测量并布局子View
+     * @param view view
+     */
     private void measureLayoutItemView(View view){
         measureChildWithMargins(view, 0, 0);
         RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) view.getLayoutParams();
@@ -147,8 +186,12 @@ public class JKCardLayoutManager extends RecyclerView.LayoutManager {
                 top+lp.topMargin+lp.bottomMargin + getDecoratedMeasuredHeight(view));
     }
 
+    /**
+     * 执行Back动画
+     * @param view　targetView
+     */
     private void doBackAnimator(final View view){
-        final CardAnimatorManager.AnimatorInfo add = mAnimatorStackManager.takeAdd();
+        final CardAnimatorManager.AnimatorInfo add = mAnimatorStackManager.takeRecentInfo();
         int width = mRecyclerView.getWidth();
         int height = mRecyclerView.getHeight();
         ObjectAnimator objectAnimator = ObjectAnimator.ofObject(view, new CardAnimatorManager.AnimatorInfoProperty(width, height), new CardAnimatorManager.AnimatorInfoEvaluator(), add,CardAnimatorManager.AnimatorInfo.ZERO);
@@ -158,8 +201,12 @@ public class JKCardLayoutManager extends RecyclerView.LayoutManager {
     }
 
 
+    /**
+     * 执行Next动画
+     * @param view　targetView
+     */
     private void doNextAnimator(final View view){
-        final CardAnimatorManager.AnimatorInfo createRemove = mAnimatorStackManager.createRemove();
+        final CardAnimatorManager.AnimatorInfo createRemove = mAnimatorStackManager.createRandomInfo();
         int width = mRecyclerView.getWidth();
         int height = mRecyclerView.getHeight();
         ObjectAnimator objectAnimator = ObjectAnimator.ofObject(view, new CardAnimatorManager.AnimatorInfoProperty(width, height), new CardAnimatorManager.AnimatorInfoEvaluator(), CardAnimatorManager.AnimatorInfo.ZERO, createRemove);
@@ -168,6 +215,13 @@ public class JKCardLayoutManager extends RecyclerView.LayoutManager {
         objectAnimator.start();
     }
 
+    /**
+     * 监听动画执行
+     * @param next　true Next行为 / false Back行为
+     * @param objectAnimator　动画
+     * @param view　targetView
+     * @param animatorInfo 动画信息
+     */
     private void listenerAnimator(final boolean next,ObjectAnimator objectAnimator,final View view,final CardAnimatorManager.AnimatorInfo animatorInfo){
 
         objectAnimator.addListener(new AnimatorListenerAdapter() {
@@ -197,7 +251,7 @@ public class JKCardLayoutManager extends RecyclerView.LayoutManager {
                 if (next) {
                     mPendingOptNext = false;
                     mAnimatorRunning = false;
-                    mAnimatorStackManager.addRemoveToBackStack(animatorInfo);
+                    mAnimatorStackManager.addToBackStack(animatorInfo);
                     notifyStateListener(CardLayoutHelper.State.IDLE);
                     requestLayout();
                 }else {
@@ -210,7 +264,9 @@ public class JKCardLayoutManager extends RecyclerView.LayoutManager {
         });
         objectAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             int childCount = mRecyclerView.getChildCount();
+            //记录动画执行前的所有子View的translationX
             Float[] translationXs = new Float[childCount];
+            //记录动画执行前的所有子View的translationY
             Float[]  translationYs = new Float[childCount];
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -228,6 +284,7 @@ public class JKCardLayoutManager extends RecyclerView.LayoutManager {
                     if (translationYs[i] == null) {
                         translationYs[i] = childAt.getTranslationY();
                     }
+                    //对子View进行比例偏移
                     if (next) {
                         childAt.setTranslationX(translationXs[i] - fl);
                         childAt.setTranslationY(translationYs[i] + fl);

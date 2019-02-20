@@ -12,14 +12,16 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 
-
+/**
+ * 下拉手势布局，仿即刻探索页交互
+ */
 class PullDownLayout : ConstraintLayout {
     companion object {
         private const val DRAG_RATIO = 0.6f
 
         private const val ANIM_DURATION = 200
 
-        private const val PARALLAX_RATIO = 0.9f
+        private const val PARALLAX_RATIO = 1.1f
     }
 
     private var mRecyclerView: RecyclerView
@@ -32,28 +34,62 @@ class PullDownLayout : ConstraintLayout {
 
     private var mTouchSlop: Int
 
+    /**
+     * 已经开始拖拽标志
+     */
     private var mIsBeingDragged: Boolean = false
 
+    /**
+     * 不能进行拖拽标志
+     */
     private var mIsUnableToDrag: Boolean = false
+
 
     private var mLastMotionX: Float = 0f
     private var mLastMotionY: Float = 0f
     private var mInitialMotionX: Float = 0f
     private var mInitialMotionY: Float = 0f
+
+    /**
+     * 多点触控下激活的手指Id
+     */
     private var mActivePointerId = -1
 
+    /**
+     * 记录总共的dx
+     */
     private var mTotalDx: Float = 0f
+
+    /**
+     * 记录总共的dy
+     */
     private var mTotalDy: Float = 0f
-    private val mDragRatio = DRAG_RATIO
 
-    private val mDuration = ANIM_DURATION
+    /**
+     * 拖拽阻尼系数
+     */
+    private var mDragRatio = DRAG_RATIO
 
-    private val mParallaxRatio = PARALLAX_RATIO
+    /**
+     * 动画执行时间
+     */
+    private var mDuration = ANIM_DURATION
 
+    /**
+     * 视觉差系数,等同于topMenu位移/mRecyclerView位移比例
+     */
+    private var mParallaxRatio = PARALLAX_RATIO
+
+    /**
+     * 菜单打开/关闭标志
+     */
     private var mOpened = false
 
     private var mObjectAnimator: ObjectAnimator? = null
 
+    /**
+     * 最大TranslationY,一般取topMenu的高度作为参考值
+     */
     private var mMaxTranslationY = 0
 
 
@@ -77,7 +113,39 @@ class PullDownLayout : ConstraintLayout {
     }
 
 
+    /**
+     * 设置视觉差比例系数
+     */
+    fun setParallaxRatio(parallaxRatio: Float){
+        this.mParallaxRatio = parallaxRatio
+    }
+
+    fun getParallaxRatio():Float{
+        return this.mParallaxRatio
+    }
+
+    /**
+     * 设置拖拽阻尼系数比例
+     */
+    fun setDragRatio(dragRatio: Float){
+        this.mDragRatio = dragRatio
+    }
+
+
+    fun getDragRatio():Float{
+        return this.mDragRatio
+    }
+
+    /**
+     * 设置动画时长
+     */
+    fun setDuration(duration: Int){
+        this.mDuration = duration
+    }
+
+
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        //动画执行时，拦截一切触摸事件
         if (isAnimRunning()){
             return true
         }
@@ -198,7 +266,7 @@ class PullDownLayout : ConstraintLayout {
                 mIsBeingDragged = false
                 mIsUnableToDrag = false
 
-                var notAnim = false
+                var notAnim = false //是否不需要执行动画
                 if (mTopMenu.translationY == 0f) {
                     mOpened = false
                     notAnim = true
@@ -206,6 +274,7 @@ class PullDownLayout : ConstraintLayout {
                     mOpened = true
                     notAnim = true
                 }
+                //需要执行动画
                 if (!notAnim) {
                     if (mOpened) {
                         closeMenu()
@@ -225,18 +294,21 @@ class PullDownLayout : ConstraintLayout {
     }
 
     private fun startAnimator(open: Boolean) {
-        val startY = mTopMenu.translationY
-        val endY = if (open) mMaxTranslationY.toFloat() else 0f
-        val startY2 = mRecyclerView.translationY
-        val endY2 = if (open) mMaxTranslationY * mParallaxRatio else 0f
+        if (mParallaxRatio <= 0f){
+            mParallaxRatio= PARALLAX_RATIO
+        }
+        val topMenuStartY = mTopMenu.translationY
+        val topMenuEndY = if (open) mMaxTranslationY.toFloat() else 0f
+        val rvStartY = mRecyclerView.translationY
+        val rvEndY = if (open) mMaxTranslationY / mParallaxRatio else 0f
         val startAlpha = mMaskView.alpha
         val endAlpha = if (open) 1f else 0f
-        if (startY == endY) return
-        mObjectAnimator = ObjectAnimator.ofFloat(mTopMenu, "translationY", startY, endY)
-        mObjectAnimator!!.duration = (Math.abs(endY - startY) / mMaxTranslationY * mDuration).toLong()
+        if (topMenuStartY == topMenuEndY) return
+        mObjectAnimator = ObjectAnimator.ofFloat(mTopMenu, "translationY", topMenuStartY, topMenuEndY)
+        mObjectAnimator!!.duration = (Math.abs(topMenuEndY - topMenuStartY) / mMaxTranslationY * mDuration).toLong()
         mObjectAnimator!!.addUpdateListener {
             val animatedFraction = it.animatedFraction
-            val translationY = startY2 + (endY2 - startY2) * animatedFraction
+            val translationY = rvStartY + (rvEndY - rvStartY) * animatedFraction
             mRecyclerView.translationY = translationY
             mBottomMenu.translationY = mRecyclerView.translationY
 
@@ -262,6 +334,10 @@ class PullDownLayout : ConstraintLayout {
 
     }
 
+
+    /**
+     * 打开菜单
+     */
     fun openMenu() {
         if (mIsBeingDragged) {
             return
@@ -280,7 +356,10 @@ class PullDownLayout : ConstraintLayout {
         return false
     }
 
-    private fun closeMenu() {
+    /**
+     * 关闭菜单
+     */
+    fun closeMenu() {
         if (mIsBeingDragged) {
             return
         }
@@ -298,9 +377,16 @@ class PullDownLayout : ConstraintLayout {
         mTotalDx += dx
         mTotalDy += dy
 
-        val translationY: Int = Math.max(Math.min((mTopMenu.translationY + dy * mDragRatio).toInt(), mMaxTranslationY), 0)
-        mTopMenu.translationY = translationY.toFloat()
-        mRecyclerView.translationY = translationY * mParallaxRatio
+        if (mParallaxRatio <= 0f){
+            mParallaxRatio= PARALLAX_RATIO
+        }
+
+        val ryTransitionY = Math.max(Math.min(mRecyclerView.translationY + dy*mDragRatio,mMaxTranslationY / mParallaxRatio),0f)
+
+        val translationY  = Math.max(Math.min(mTopMenu.translationY + dy * mDragRatio*mParallaxRatio, mMaxTranslationY.toFloat()), 0f)
+
+        mTopMenu.translationY = translationY
+        mRecyclerView.translationY = ryTransitionY
         mMaskView.visibility = View.VISIBLE
         mMaskView.translationY = mRecyclerView.translationY
         mMaskView.alpha = translationY/mMaxTranslationY.toFloat()

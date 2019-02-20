@@ -37,7 +37,14 @@ class MainActivity : AppCompatActivity() {
 
         mCardLayoutHelper = CardLayoutHelper()
 
-        mCardLayoutHelper.setConfig(CardLayoutHelper.Config().setCardCount(2).setMaxRotation(20f))
+        val config = CardLayoutHelper.Config()
+                .setCardCount(2)
+                .setMaxRotation(20f)
+                .setOffset(8.dp)
+                .setSwipeThreshold(0.2f)
+                .setDuration(200)
+
+        mCardLayoutHelper.setConfig(config)
 
         mCardLayoutHelper.attachToRecyclerView(recycler_view)
 
@@ -78,6 +85,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         getMockData()
+
+        //设置阻尼
+        pull_down_layout.setDragRatio(0.6f)
+        //设置视觉差系数
+        pull_down_layout.setParallaxRatio(1.1f)
+        //设置动画时长
+        pull_down_layout.setDragRatio(200f)
     }
 
     @Suppress("UNCHECKED_CAST")
