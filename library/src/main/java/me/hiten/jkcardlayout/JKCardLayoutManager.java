@@ -22,7 +22,7 @@ public class JKCardLayoutManager extends RecyclerView.LayoutManager {
     private CardLayoutHelper.State mState = CardLayoutHelper.State.IDLE;
 
 
-    private CardLayoutHelper.Config mConfig = CardLayoutHelper.Config.DEFAULT;
+    private CardLayoutHelper.Config mConfig = new CardLayoutHelper.Config();
 
     JKCardLayoutManager(RecyclerView mRecyclerView, CardAnimatorManager mAnimatorStackManager) {
         this.mRecyclerView = mRecyclerView;

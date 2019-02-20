@@ -5,6 +5,10 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -30,6 +34,9 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var mCardLayoutHelper : CardLayoutHelper<CardEntity>
 
+
+    private lateinit var mConfig : CardLayoutHelper.Config
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -37,14 +44,14 @@ class MainActivity : AppCompatActivity() {
 
         mCardLayoutHelper = CardLayoutHelper()
 
-        val config = CardLayoutHelper.Config()
+        mConfig = CardLayoutHelper.Config()
                 .setCardCount(2)
                 .setMaxRotation(20f)
                 .setOffset(8.dp)
                 .setSwipeThreshold(0.2f)
                 .setDuration(200)
 
-        mCardLayoutHelper.setConfig(config)
+        mCardLayoutHelper.setConfig(mConfig)
 
         mCardLayoutHelper.attachToRecyclerView(recycler_view)
 
@@ -92,6 +99,8 @@ class MainActivity : AppCompatActivity() {
         pull_down_layout.setParallaxRatio(1.1f)
         //设置动画时长
         pull_down_layout.setDuration(200)
+
+        updateConfigShow()
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -172,6 +181,30 @@ class MainActivity : AppCompatActivity() {
         }else if (mCardLayoutHelper.noBack()){
             super.onBackPressed()
         }
+    }
+
+    private fun updateConfigShow(){
+        val text = "卡片数:${mConfig.cardCount} | 偏移像素:${mConfig.offset} | 最大旋转角度:${mConfig.maxRotation} | 拖拽触发阈值${mConfig.swipeThreshold} | 下拉菜单阻尼:${pull_down_layout.getDragRatio()} | 下拉视觉差比例${pull_down_layout.getParallaxRatio()}"
+        val list = text.split("|")
+        val spannableString = SpannableString(text)
+        var start = 0
+        for (index in 0 until list.size){
+            val item = list[index]
+            val end = start + item.length
+            spannableString.setSpan(object :ClickableSpan(){
+                override fun onClick(widget: View) {
+                    showDialog(item)
+                }
+            },start,end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+            start+=item.length + 1
+        }
+        tv_show_config.text = spannableString
+        tv_show_config.movementMethod = LinkMovementMethod.getInstance()
+    }
+
+    private fun showDialog(title:String){
+        val settingDialogFragment = SettingDialogFragment.newInstance(title)
+        settingDialogFragment.show(supportFragmentManager,"dialog_setting")
     }
 
 }

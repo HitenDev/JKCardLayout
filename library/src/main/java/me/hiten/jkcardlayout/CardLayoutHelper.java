@@ -24,32 +24,30 @@ public class CardLayoutHelper<T> {
      */
     public static class Config {
 
-        static Config DEFAULT = new Config();
-
         /**
          * 旋转最大角度
          */
-        float maxRotation = 10;
+        public float maxRotation = 10;
 
         /**
          * 展示的卡片个数，最小是2个
          */
-        int cardCount =2;
+        public int cardCount =2;
 
         /**
          * 卡片位置之间的偏移量
          */
-        int offset = Utils.dp2px(8);
+        public int offset = Utils.dp2px(8);
 
         /**
          * 动画执行时间
          */
-        long duration = 250;
+        public long duration = 250;
 
         /**
          * 拖拽时触发移除的阈值比例
          */
-        float swipeThreshold = 0.2f;
+        public float swipeThreshold = 0.2f;
 
         public Config() {
         }
@@ -167,7 +165,7 @@ public class CardLayoutHelper<T> {
     public void attachToRecyclerView(RecyclerView recyclerView) {
         mRecyclerView = recyclerView;
         if (mConfig == null) {
-            mConfig = Config.DEFAULT;
+            mConfig = new Config();
         }
         mAnimatorStackManager = new CardAnimatorManager();
         mAnimatorStackManager.setRotation(mConfig.maxRotation);

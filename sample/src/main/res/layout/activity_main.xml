@@ -25,9 +25,13 @@
         android:background="#cccccc"
         />
     <TextView
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:id="@+id/tv_show_config"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:text="底部导航栏"
+        android:textSize="11sp"
+        android:lineSpacingExtra="4dp"
         android:textColor="#333333"
         android:gravity="center"
         />
