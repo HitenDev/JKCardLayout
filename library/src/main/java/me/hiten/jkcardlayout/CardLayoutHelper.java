@@ -180,7 +180,7 @@ public class CardLayoutHelper<T> {
 
 
     private void setItemTouchHelper(final RecyclerView recyclerView) {
-        //拷贝一份ItemTouchHelper代码并修改，对动画结束位置的关键逻辑进行修改，可见代码618-624行
+        //基于ItemTouchHelper源码修改，改动1:对动画结束位置的关键逻辑进行修改，可见代码621-629行 改动2:优化多指触控，代码413-415行
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.DOWN | ItemTouchHelper.UP | ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
             /**

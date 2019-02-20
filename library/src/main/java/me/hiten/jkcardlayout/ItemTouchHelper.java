@@ -410,6 +410,9 @@ class ItemTouchHelper extends RecyclerView.ItemDecoration
                         final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
                         mActivePointerId = event.getPointerId(newPointerIndex);
                         updateDxDy(event, mSelectedFlags, pointerIndex);
+                        //多指触控能连续操作,避免跳动
+                        mInitialTouchX = event.getX(newPointerIndex) - mDx;
+                        mInitialTouchY = event.getY(newPointerIndex) - mDy;
                     }
                     break;
                 }
@@ -616,11 +619,13 @@ class ItemTouchHelper extends RecyclerView.ItemDecoration
                     case START:
                     case END:
                         targetTranslateX = Math.signum(mDx) * mRecyclerView.getWidth();
+                        //根据角度动态计算targetTranslateY
                         targetTranslateY = Math.signum(currentTranslateY)*Math.abs(targetTranslateX*currentTranslateY/currentTranslateX);
                         break;
                     case UP:
                     case DOWN:
                         targetTranslateY = Math.signum(mDy) * mRecyclerView.getHeight();
+                        //根据角度动态计算targetTranslateX
                         targetTranslateX = Math.signum(currentTranslateX)*Math.abs(targetTranslateY*currentTranslateX/currentTranslateY);
                         break;
                     default:
