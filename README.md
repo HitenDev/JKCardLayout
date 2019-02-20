@@ -19,7 +19,11 @@
 ![](https://upload-images.jianshu.io/upload_images/869487-9964307c9145ba73.png?imageMogr2/auto-orient/strip)
 
 
-# 基本使用
+# 如何使用
+
+```
+implementation 'me.hiten:jkcardlayout:0.1.1'
+```
 
 ## 卡片布局辅助类CardLayoutHelper
 
