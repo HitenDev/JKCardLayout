@@ -4,9 +4,9 @@
 代码大部分使用Kotlin语言编写，假装娴熟，如有使用不当还请各路大神指点。
 
 # 下载Demo
-![](https://www.pgyer.com/app/qrcode/HjLN)
+![](https://www.pgyer.com/app/qrcode/yZ2L)
 
-下载地址：https://www.pgyer.com/HjLN
+下载地址：https://www.pgyer.com/yZ2L
 
 # 图片展示
 
@@ -15,8 +15,9 @@
 ![](https://upload-images.jianshu.io/upload_images/869487-de188885d2757ce3.gif?imageMogr2/auto-orient/strip)
 ![](https://upload-images.jianshu.io/upload_images/869487-6e5093c7c0955bcc.gif?imageMogr2/auto-orient/strip)
 ![](https://upload-images.jianshu.io/upload_images/869487-dc1eeb156de14d2e.gif?imageMogr2/auto-orient/strip)
+![](https://upload-images.jianshu.io/upload_images/869487-129df25198e76ef0.png?imageMogr2/auto-orient/strip)
+![](https://upload-images.jianshu.io/upload_images/869487-0c3417dfae3b4f36.png?imageMogr2/auto-orient/strip)
 ![](https://upload-images.jianshu.io/upload_images/869487-5b26f5d84bbbb2e9.png?imageMogr2/auto-orient/strip)
-![](https://upload-images.jianshu.io/upload_images/869487-9964307c9145ba73.png?imageMogr2/auto-orient/strip)
 
 
 # 如何使用
