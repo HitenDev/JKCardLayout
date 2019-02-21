@@ -8,16 +8,21 @@
 
 下载地址：https://www.pgyer.com/yZ2L
 
-# 图片展示
+# 效果展示
 
-**视频演示**：https://youtu.be/F9QJEQJnHmo
+## 视频
 
-![](https://upload-images.jianshu.io/upload_images/869487-de188885d2757ce3.gif?imageMogr2/auto-orient/strip)
-![](https://upload-images.jianshu.io/upload_images/869487-6e5093c7c0955bcc.gif?imageMogr2/auto-orient/strip)
-![](https://upload-images.jianshu.io/upload_images/869487-dc1eeb156de14d2e.gif?imageMogr2/auto-orient/strip)
-![](https://upload-images.jianshu.io/upload_images/869487-129df25198e76ef0.png?imageMogr2/auto-orient/strip)
+https://youtu.be/GY_YVJGgKtk
+
+## 图片
+![](https://upload-images.jianshu.io/upload_images/869487-6097cfbdf65c1edd.gif?imageMogr2/auto-orient/strip)
+![](https://upload-images.jianshu.io/upload_images/869487-42bc90ba6542a913.gif?imageMogr2/auto-orient/strip)
+![](https://upload-images.jianshu.io/upload_images/869487-e1c84f090d9990b6.gif?imageMogr2/auto-orient/strip)
+![](https://upload-images.jianshu.io/upload_images/869487-e71ee69d64d91e5a.gif?imageMogr2/auto-orient/strip)
 ![](https://upload-images.jianshu.io/upload_images/869487-0c3417dfae3b4f36.png?imageMogr2/auto-orient/strip)
-![](https://upload-images.jianshu.io/upload_images/869487-5b26f5d84bbbb2e9.png?imageMogr2/auto-orient/strip)
+![](https://upload-images.jianshu.io/upload_images/869487-46b8372d3a7b46cd.png?imageMogr2/auto-orient/strip)
+
+
 
 
 # 如何使用
