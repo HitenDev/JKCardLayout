@@ -1,3 +1,7 @@
+
+重要提示:该交互flutter实现已经开源，快来围观：[https://github.com/HitenDev/FlutterDragCard](https://github.com/HitenDev/FlutterDragCard)
+===
+----------以下正文----------
 # JKCardLayout
 本项目使用RecyclerView和自定义LayoutManager等方法实现即刻App探索页交互，支持卡片拖拽，卡片回退栈管理，下拉展示菜单等功能；欢迎大家点赞或者吐槽。
 
@@ -7,6 +11,7 @@
 ![](https://www.pgyer.com/app/qrcode/yZ2L)
 
 下载地址：https://www.pgyer.com/yZ2L
+
 
 # 效果展示
 
